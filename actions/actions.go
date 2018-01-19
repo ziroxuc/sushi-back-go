@@ -95,8 +95,6 @@ func GetPersonaId2(w http.ResponseWriter, r *http.Request){
 }
 
 
-
-
 func AddPersona(w http.ResponseWriter, r *http.Request)  {
 	decoder := json.NewDecoder(r.Body)
 
@@ -115,4 +113,42 @@ func AddPersona(w http.ResponseWriter, r *http.Request)  {
 
 }
 
+func UpdatePersona(w http.ResponseWriter, r *http.Request)  {
+
+	params := mux.Vars(r)
+	persona_id := params["id"]
+	idConv,_ := strconv.Atoi(persona_id);
+
+	fmt.Println(idConv)
+
+	var persona_data models.Persona
+
+
+	decoder := json.NewDecoder(r.Body)
+
+	fmt.Println(decoder)
+
+	err := decoder.Decode(&persona_data)
+
+	if(err != nil){
+		panic(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	defer r.Body.Close()
+
+	document := bson.M{"id":idConv}
+	change := bson.M{"$set":persona_data}
+	err = collection.Update(document,change)
+	if(err != nil){
+		panic(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type","application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(persona_data)
+}
 

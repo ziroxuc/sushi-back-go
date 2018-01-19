@@ -43,6 +43,9 @@ var routes = Routes{
 	Route{
 		"GetPersonaid2", "GET", "/personas/{id2}", actions.GetPersonaId2},
 
+	Route{
+		"updatePersona", "PUT", "/persona/{id}", actions.UpdatePersona},
+
 
 
 }
